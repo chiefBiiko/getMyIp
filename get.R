@@ -16,11 +16,11 @@ publicV4 <- function(throw=TRUE) {
                                  curl::new_handle())
   publicIp <- trimws(rawToChar(res$content))
   if (length(publicIp) == 1L && 
-      grepl('^(\\d+\\.?)+$', publicIp)) {
+      grepl('^(\\d+\\.)+\\d+$', publicIp)) {
     return(publicIp)
   } else if (throw && 
              length(publicIp) != 1L || 
-             !grepl('^(\\d+\\.?)+$', publicIp)) {
+             !grepl('^(\\d+\\.)+\\d+$', publicIp)) {
     stop('oops...')
   } else {
     return(NULL)
@@ -44,13 +44,13 @@ privateV4 <- function(throw=TRUE) {
     cmdout <- system2('cmd.exe', input='ipconfig | findstr /i ipv4', 
                       stdout=TRUE, stderr=TRUE)
     ipline <- grep('ipv4\\s+address', cmdout, ignore.case=TRUE, value=TRUE)
-    privateIp <- regmatches(ipline, regexpr('(\\d+\\.?)+\\s*$', ipline))
+    privateIp <- regmatches(ipline, regexpr('(\\d+\\.)+\\d+\\s*$', ipline))
     if (length(privateIp) == 1L && 
-        grepl('^(\\d+\\.?)+$', privateIp)) {
+        grepl('^(\\d+\\.)+\\d+$', privateIp)) {
       return(privateIp)
     } else if (throw && 
                length(privateIp) != 1L || 
-               !grepl('^(\\d+\\.?)+$', privateIp)) {
+               !grepl('^(\\d+\\.)+\\d+$', privateIp)) {
       stop('oops...')
     } else {
       return(NULL)
@@ -72,7 +72,7 @@ listV4 <- function(throw=TRUE) {
   stopifnot(is.logical(throw))
   IPS <- list(public=publicV4(throw=throw), private=privateV4(throw=throw))
   if (length(IPS) == 2L && 
-      all(grepl('^(\\d+\\.?)+$', IPS))) {
+      all(grepl('^(\\d+\\.)+\\d+$', IPS))) {
     return(IPS)
   } else if (throw) {
     stop('oops...')
