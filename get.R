@@ -41,12 +41,10 @@ publicV4 <- function(throw=TRUE) {
 privateV4 <- function(throw=TRUE) {
   stopifnot(is.logical(throw))
   if (grepl('win', .Platform$OS.type, TRUE)) {
-    cli <- 'ipconfig | findstr /i ipv4'
     cmdout <- system2(command='cmd.exe',
-                      input=cli,
-                      stdout=TRUE,
-                      stderr=TRUE)
-    if (!length(cmdout)) stop('error calling system command: ', cli)
+                      input='ipconfig | findstr /i ipv4',
+                      stdout=TRUE, stderr=TRUE)
+    if (length(cmdout) == 0L) stop('error calling system command: ', 'cmd.exe')
     ipline <- grep('ipv4(?!\\s*$)', cmdout, TRUE, TRUE, TRUE)[1L]
     privateIp <- trimws(regmatches(ipline,
                                    regexpr('(\\d+\\.)+\\d+\\s*$', ipline)))
@@ -63,12 +61,10 @@ privateV4 <- function(throw=TRUE) {
   } else {  # *nix
     # ip route get 8.8.8.8 | awk '{print $NF; exit}'  # linux only
     # ifconfig  # mac and linux
-    cli <- 'ifconfig | grep -i -P "inet4?\\s*addr"'
     cmdout <- system2(command='bash',
-                      input=cli,
-                      stdout=TRUE,
-                      stderr=TRUE)
-    if (!length(cmdout)) stop('error calling system command: ', cli)
+                      input='ifconfig | grep -i -P "inet4?\\s*addr"',
+                      stdout=TRUE, stderr=TRUE)
+    if (length(cmdout) == 0L) stop('error calling system command: ', 'bash')
     ipline <- grep('^(?:.(?!127\\.0\\.0\\.1))*$', cmdout, perl=TRUE, 
                    value=TRUE)[1L]
     privateIp <- trimws(sub('^.*addr[^\\:]*\\:((?:\\d+\\.)+\\d+)\\s+.*$', 
