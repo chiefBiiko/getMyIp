@@ -41,10 +41,15 @@ publicV4 <- function(throw=TRUE) {
 privateV4 <- function(throw=TRUE) {
   stopifnot(is.logical(throw))
   if (grepl('win', .Platform$OS.type, TRUE)) {
-    cmdout <- system2('cmd.exe', input='ipconfig | findstr /i ipv4', 
-                      stdout=TRUE, stderr=TRUE)
-    ipline <- grep('ipv4\\s+address', cmdout, ignore.case=TRUE, value=TRUE)
-    privateIp <- regmatches(ipline, regexpr('(\\d+\\.)+\\d+\\s*$', ipline))
+    cli <- 'ipconfig | findstr /i ipv4'
+    cmdout <- system2(command='cmd.exe',
+                      input=cli,
+                      stdout=TRUE,
+                      stderr=TRUE)
+    if (!length(cmdout)) stop('error calling system command: ', cli)
+    ipline <- grep('ipv4(?!\\s*$)', cmdout, TRUE, TRUE, TRUE)[1L]
+    privateIp <- trimws(regmatches(ipline,
+                                   regexpr('(\\d+\\.)+\\d+\\s*$', ipline)))
     if (length(privateIp) == 1L && 
         grepl('^(\\d+\\.)+\\d+$', privateIp)) {
       return(privateIp)
@@ -55,9 +60,29 @@ privateV4 <- function(throw=TRUE) {
     } else {
       return(NULL)
     }
-  } else {
-    #..#
-    NULL
+  } else {  # *nix
+    # ip route get 8.8.8.8 | awk '{print $NF; exit}'  # linux only
+    # ifconfig  # mac and linux
+    cli <- 'ifconfig | grep -i -P "inet4?\\s*addr"'
+    cmdout <- system2(command='bash',
+                      input=cli,
+                      stdout=TRUE,
+                      stderr=TRUE)
+    if (!length(cmdout)) stop('error calling system command: ', cli)
+    ipline <- grep('^(?:.(?!127\\.0\\.0\\.1))*$', cmdout, perl=TRUE, 
+                   value=TRUE)[1L]
+    privateIp <- trimws(sub('^.*addr[^\\:]*\\:((?:\\d+\\.)+\\d+)\\s+.*$', 
+                            '\\1', ipline, perl=TRUE))
+    if (length(privateIp) == 1L && 
+        grepl('^(\\d+\\.)+\\d+$', privateIp)) {
+      return(privateIp)
+    } else if (throw && 
+               length(privateIp) != 1L || 
+               !grepl('^(\\d+\\.)+\\d+$', privateIp)) {
+      stop('oops...')
+    } else {
+      return(NULL)
+    }
   }
 }
 
