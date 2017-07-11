@@ -41,44 +41,32 @@ publicV4 <- function(throw=TRUE) {
 privateV4 <- function(throw=TRUE) {
   stopifnot(is.logical(throw))
   if (grepl('win', .Platform$OS.type, TRUE)) {
-    cmdout <- system2(command='cmd.exe',
-                      input='ipconfig | findstr /i ipv4',
+    cmdout <- system2(command='cmd.exe', input='ipconfig | findstr /i ipv4',
                       stdout=TRUE, stderr=TRUE)
-    if (length(cmdout) == 0L) stop('error calling system command: ', 'cmd.exe')
+    if (throw && length(cmdout) == 0L) {
+      stop('error in cmd.exe')
+    } else if (length(cmdout) == 0L) {
+      return(NULL)
+    }
     ipline <- grep('ipv4(?!\\s*$)', cmdout, TRUE, TRUE, TRUE)[1L]
     privateIp <- trimws(regmatches(ipline,
-                                   regexpr('(\\d+\\.)+\\d+\\s*$', ipline)))
+                                   regexpr('(\\d+\\.){3}\\d+\\s*$', ipline)))
     if (length(privateIp) == 1L && 
         grepl('^(\\d+\\.)+\\d+$', privateIp)) {
       return(privateIp)
     } else if (throw && 
-               length(privateIp) != 1L || 
-               !grepl('^(\\d+\\.)+\\d+$', privateIp)) {
+               length(privateIp) != 1L ||  # aka > 1L
+               !all(grepl('^(\\d+\\.)+\\d+$', privateIp))) {
       stop('oops...')
     } else {
       return(NULL)
     }
-  } else {  # *nix
-    # ip route get 8.8.8.8 | awk '{print $NF; exit}'  # linux only
-    # ifconfig  # mac and linux
-    cmdout <- system2(command='bash',
-                      input='ifconfig | grep -i -P "inet4?\\s*addr"',
-                      stdout=TRUE, stderr=TRUE)
-    if (length(cmdout) == 0L) stop('error calling system command: ', 'bash')
-    ipline <- grep('^(?:.(?!127\\.0\\.0\\.1))*$', cmdout, perl=TRUE, 
-                   value=TRUE)[1L]
-    privateIp <- trimws(sub('^.*addr[^\\:]*\\:((?:\\d+\\.)+\\d+)\\s+.*$', 
-                            '\\1', ipline, perl=TRUE))
-    if (length(privateIp) == 1L && 
-        grepl('^(\\d+\\.)+\\d+$', privateIp)) {
-      return(privateIp)
-    } else if (throw && 
-               length(privateIp) != 1L || 
-               !grepl('^(\\d+\\.)+\\d+$', privateIp)) {
-      stop('oops...')
-    } else {
-      return(NULL)
-    }
+  } else {  # unix
+    cli <- paste('ifconfig | grep "inet[^6]" | grep -v -F "127.0.0.1" |', 
+                 'grep -o -E "([0-9]+\\.){3}[0-9]+" | head -1')
+    privateIp <- system2(command='bash', input=cli, stdout=TRUE, stderr=TRUE)
+    if (throw && length(privateIp) != 1L) stop('error in bash')
+    return(if (length(privateIp) == 1L) privateIp else NULL)
   }
 }
 
