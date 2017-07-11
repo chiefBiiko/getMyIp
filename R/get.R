@@ -61,11 +61,16 @@ privateV4 <- function(throw=TRUE) {
     } else {
       return(NULL)
     }
-  } else {  # unix
+  } else if (grepl('(mac)|(os\\s*x)|(darwin)', Sys.info()['sysname'], TRUE)) {  # unix
     cli <- paste('ifconfig | grep "inet[^6]" | grep -v -F "127.0.0.1" |', 
                  'grep -o -E "([0-9]+\\.){3}[0-9]+" | head -1')
     privateIp <- system2(command='sh', input=cli, stdout=TRUE, stderr=TRUE)
-    if (throw && length(privateIp) != 1L) stop('error in bash')
+    if (throw && length(privateIp) != 1L) stop('error in sh')
+    return(if (length(privateIp) == 1L) privateIp else NULL)
+  } else if (grepl('(unix)|(linux)', .Platform$OS.type)) {
+    privateIp <- trimws(system2(command='sh', input='hostname -I', 
+                                stdout=TRUE, stderr=TRUE))
+    if (throw && length(privateIp) != 1L) stop('error in sh')
     return(if (length(privateIp) == 1L) privateIp else NULL)
   }
 }
