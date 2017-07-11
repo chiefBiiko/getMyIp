@@ -18,6 +18,6 @@ on failure.
 Get your public IP address as v4
 }
 \details{
-Queryies ichanhazip.com through SSL for your public Ip v4.
+Queryies ichanhazip.com through SSL for your public ipv4.
 }
 

@@ -7,7 +7,7 @@
 #' @return Character. Public ip address; if \code{!throw} \code{NULL} 
 #' on failure.
 #' 
-#' @details Queryies ichanhazip.com through SSL for your public Ip v4.
+#' @details Queryies ichanhazip.com through SSL for your public ipv4.
 #' 
 #' @export
 publicV4 <- function(throw=TRUE) {
@@ -34,8 +34,9 @@ publicV4 <- function(throw=TRUE) {
 #' @return Character. Private ip address; if \code{!throw} \code{NULL} 
 #' on failure.
 #' 
-#' @details Calls \code{ipconfig} on Windows and \code{ifconfig} on all
-#' other OS.
+#' @details Calls \code{ipconfig} on Windows, \code{ifconfig} on OSX, in both 
+#' cases followed by regex parsing; \code{hostname -I} on Linux with out any 
+#' further parsing.
 #' 
 #' @export
 privateV4 <- function(throw=TRUE) {
@@ -52,16 +53,18 @@ privateV4 <- function(throw=TRUE) {
     privateIp <- trimws(regmatches(ipline,
                                    regexpr('(\\d+\\.){3}\\d+\\s*$', ipline)))
     if (length(privateIp) == 1L && 
-        grepl('^(\\d+\\.)+\\d+$', privateIp)) {
+        grepl('^(\\d+\\.){3}\\d+$', privateIp) &&
+        !grepl('127.0.0.1', privateIp, fixed=TRUE)) {
       return(privateIp)
     } else if (throw && 
                length(privateIp) != 1L ||  # aka > 1L
-               !all(grepl('^(\\d+\\.)+\\d+$', privateIp))) {
-      stop('oops...')
+               !grepl('^(\\d+\\.){3}\\d+$', privateIp) ||
+               grepl('127.0.0.1', privateIp, fixed=TRUE)) {
+      stop('oops...something went wrong...')
     } else {
       return(NULL)
     }
-  } else if (grepl('(mac)|(os\\s*x)|(darwin)', Sys.info()['sysname'], TRUE)) {  # unix
+  } else if (grepl('(os\\s*x)|(darwin)', Sys.info()['sysname'], TRUE)) {
     cli <- paste('ifconfig | grep "inet[^6]" | grep -v -F "127.0.0.1" |', 
                  'grep -o -E "([0-9]+\\.){3}[0-9]+" | head -1')
     privateIp <- system2(command='sh', input=cli, stdout=TRUE, stderr=TRUE)
@@ -70,8 +73,18 @@ privateV4 <- function(throw=TRUE) {
   } else if (grepl('(unix)|(linux)', .Platform$OS.type)) {
     privateIp <- trimws(system2(command='sh', input='hostname -I', 
                                 stdout=TRUE, stderr=TRUE))
-    if (throw && length(privateIp) != 1L) stop('error in sh')
-    return(if (length(privateIp) == 1L) privateIp else NULL)
+    if (length(privateIp) == 1L && 
+        grepl('^(\\d+\\.){3}\\d+$', privateIp) &&
+        !grepl('127.0.0.1', privateIp, fixed=TRUE)) {
+      return(privateIp)
+    } else if (throw && 
+               length(privateIp) != 1L || 
+               !grepl('^(\\d+\\.){3}\\d+$', privateIp) ||
+               grepl('127.0.0.1', privateIp, fixed=TRUE)) {
+      stop('oops...something went wrong...')
+    } else {
+      return(NULL)
+    }
   }
 }
 

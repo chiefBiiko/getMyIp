@@ -18,7 +18,8 @@ on failure.
 Get your private IP address as v4
 }
 \details{
-Calls \code{ipconfig} on Windows and \code{ifconfig} on all
-other OS.
+Calls \code{ipconfig} on Windows, \code{ifconfig} on OSX, in both 
+cases followed by regex parsing; \code{hostname -I} on Linux with out any 
+further parsing.
 }
 
