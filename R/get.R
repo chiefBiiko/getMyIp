@@ -64,7 +64,7 @@ privateV4 <- function(throw=TRUE) {
   } else {  # unix
     cli <- paste('ifconfig | grep "inet[^6]" | grep -v -F "127.0.0.1" |', 
                  'grep -o -E "([0-9]+\\.){3}[0-9]+" | head -1')
-    privateIp <- system2(command='bash', input=cli, stdout=TRUE, stderr=TRUE)
+    privateIp <- system2(command='sh', input=cli, stdout=TRUE, stderr=TRUE)
     if (throw && length(privateIp) != 1L) stop('error in bash')
     return(if (length(privateIp) == 1L) privateIp else NULL)
   }
