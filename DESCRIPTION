@@ -1,8 +1,8 @@
 Package: getMyIp
-Title: Get your public and private ipv4
+Title: Get your public and private ip
 Version: 0.0.0.9000
 Authors@R: person("Noah Anabiik", "Last", email = "noah.anabiik.schwarz@gmail.com", role = c("aut", "cre"))
-Description: Gets your public and private ipv4.
+Description: Gets your public and private ip.
 Imports:
     curl
 Depends:
