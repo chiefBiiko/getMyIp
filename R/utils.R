@@ -26,9 +26,10 @@ greplV4 <- function(x) {
 #                       '1{0,1}[0-9]){0,1}[0-9]))$'), x))
 # }
 
+# |(0\\:0\\:0\\:0\\:0\\:0\\:0\\:1)|(\\:\\:1)
 #' @keywords internal
 greplLocalhost <- function(x) {
-  return(grepl('(127.0.0.1)|(0\\:0\\:0\\:0\\:0\\:0\\:0\\:1)|(\\:\\:1)', x))
+  return(grepl('(127\\.0\\.0\\.1)', x))
 }
 
 # # @keywords internal
