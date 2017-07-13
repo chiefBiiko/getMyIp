@@ -10,7 +10,7 @@ publicIp(version = 4L, throw = TRUE)
 \item{version}{Integer. Ip version \code{4} or \code{6}. Caution: see below.}
 
 \item{throw}{Logical. In case your ip address could not be resolved
-should an error be thrown?}
+should an error be thrown? DISABLED!}
 }
 \value{
 Character. Public ip address; if \code{!throw} \code{NULL}

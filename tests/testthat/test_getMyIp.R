@@ -4,7 +4,7 @@ testthat::context('getMyIp')
 
 testthat::test_that('private', {
   testthat::expect_true(greplV4(privateIp()))
-  testthat::expect_true(greplV6(privateIp(version=6L)))
+##testthat::expect_true(greplV6(privateIp(version=6L)))  # v6 disabled
 })
 
 testthat::test_that('public', {
@@ -18,5 +18,5 @@ testthat::test_that('listV4', {
 
 testthat::test_that('private is not localhost', {
   testthat::expect_false(greplLocalhost(privateIp()))
-  testthat::expect_false(greplLocalhost(privateIp(version=6L)))
+##testthat::expect_false(greplLocalhost(privateIp(version=6L)))  # v6 disabled
 })

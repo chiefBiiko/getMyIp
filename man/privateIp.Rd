@@ -7,7 +7,7 @@
 privateIp(version = 4L, throw = TRUE)
 }
 \arguments{
-\item{version}{Integer. Ip version \code{4} or \code{6}.}
+\item{version}{Integer. Ip version \code{4} or \code{6}. DISABLED!}
 
 \item{throw}{Logical. In case your ip address could not be resolved
 should an error be thrown?}

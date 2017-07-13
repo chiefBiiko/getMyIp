@@ -4,7 +4,7 @@
 #'
 #' @param version Integer. Ip version \code{4} or \code{6}. Caution: see below.
 #' @param throw Logical. In case your ip address could not be resolved
-#' should an error be thrown?
+#' should an error be thrown? DISABLED!
 #' @return Character. Public ip address; if \code{!throw} \code{NULL}
 #' on failure.
 #'
@@ -15,7 +15,7 @@
 #'
 #' @export
 publicIp <- function(version=4L, throw=TRUE) {
-  stopifnot(is.logical(throw), version %in% c(4L, 6L))
+  stopifnot(is.logical(throw), version %in% c(4L))  # 6L
   h <- curl::new_handle()
   curl::handle_setopt(h, IPRESOLVE=ifelse(version == 4L, 1L, 2L))
   res <- curl::curl_fetch_memory('https://icanhazip.com', h)
@@ -33,7 +33,7 @@ publicIp <- function(version=4L, throw=TRUE) {
 
 #' Get your private ip address
 #'
-#' @param version Integer. Ip version \code{4} or \code{6}.
+#' @param version Integer. Ip version \code{4} or \code{6}. DISABLED!
 #' @param throw Logical. In case your ip address could not be resolved
 #' should an error be thrown?
 #' @return Character. Private ip address; if \code{!throw} \code{NULL}
@@ -45,7 +45,7 @@ publicIp <- function(version=4L, throw=TRUE) {
 #'
 #' @export
 privateIp <- function(version=4L, throw=TRUE) {
-  stopifnot(is.logical(throw), version %in% c(4L, 6L))
+  stopifnot(is.logical(throw), version %in% c(4L))  # 6L
   if (grepl('win', .Platform$OS.type, TRUE)) {
     if (version == 4L) {
       return(privateV4Win(throw=throw))
@@ -69,14 +69,14 @@ privateIp <- function(version=4L, throw=TRUE) {
 
 #' Get a list of your private and public ip
 #'
-#' @param version Integer. Ip version \code{4} or \code{6}.
+#' @param version Integer. Ip version \code{4} or \code{6}. DISABLED!
 #' @param throw Logical. In case your ip addresses could not be resolved
 #' should an error be thrown?
 #' @return Named list; if \code{!throw} \code{NULL} on failure.
 #'
 #' @export
 listIps <- function(version=4L, throw=TRUE) {
-  stopifnot(is.logical(throw), version %in% c(4L, 6L))
+  stopifnot(is.logical(throw), version %in% c(4L))  # 6L
   IPS <- list(public=publicIp(version=version, throw=throw),
               private=privateIp(version=version, throw=throw))
   return(IPS)
