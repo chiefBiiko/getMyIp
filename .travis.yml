@@ -4,13 +4,11 @@ cache: packages
 matrix:
   include:
     - os: linux
-      sudo: required
       dist: precise
     - os: linux
       dist: trusty
       env: R_CODECOV=true
     - os: osx
-      sudo: required
       osx_image: xcode8.3
 
 r_github_packages:
