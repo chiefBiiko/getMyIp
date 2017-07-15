@@ -14,6 +14,18 @@ Get your public and private ipv4.
 devtools::install_github('chiefBiiko/getMyIp')
 ```
 
+***
+
+## Usage
+
+```r
+getMyIp::publicV4()   # '22.36.44.77'
+getMyIp::privateV4()  # '192.168.178.22'
+getMyIp::listV4()     # named list: $public, $private
+```
+
+***
+
 ## License
 
 MIT
