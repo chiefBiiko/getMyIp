@@ -3,14 +3,10 @@ Title: Get your public and private ipv4
 Version: 0.0.0.9000
 Authors@R: person("Noah Anabiik", "Schwarz", email = "noah.anabiik.schwarz@gmail.com", role = c("aut", "cre"))
 Description: Gets your public and private ipv4.
-Imports:
-    curl
-Depends:
-    R (>= 3.0.0)
+Imports: curl
+Depends: R (>= 3.0.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests:
-    testthat,
-    covr
+Suggests: testthat, covr, compiler
 RoxygenNote: 5.0.1
