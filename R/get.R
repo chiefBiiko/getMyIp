@@ -17,7 +17,7 @@ publicV4 <- function(throw=TRUE) {
   if (length(publicIp) == 1L && greplV4(publicIp)) {
     return(publicIp)
   } else if (throw && length(publicIp) != 1L || !greplV4(publicIp)) {
-    stop('oops...', publicIp)
+    stop('oops...something went wrong...: ', publicIp)
   } else {
     return(NULL)
   }

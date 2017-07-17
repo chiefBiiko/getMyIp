@@ -28,7 +28,7 @@ privateV4Win <- function(throw=TRUE) {
     return(privateIp)
   } else if (throw && length(privateIp) != 1L || !greplV4(privateIp) ||
              greplLocalhost(privateIp)) {
-    stop('oops...something went wrong...')
+    stop('oops...something went wrong...: ', privateIp)
   } else {
     return(NULL)
   }
@@ -44,7 +44,7 @@ privateV4OSX <- function(throw=TRUE) {
     return(privateIp)
   } else if (throw && length(privateIp) != 1L || !greplV4(privateIp) ||
             greplLocalhost(privateIp)) {
-    stop('oops...something went wrong...')
+    stop('oops...something went wrong...: ', privateIp)
   } else {
     return(NULL)
   }
@@ -59,7 +59,7 @@ privateV4Lin <- function(throw=TRUE) {
     return(privateIp)
   } else if (throw && length(privateIp) != 1L || !greplV4(privateIp) ||
              greplLocalhost(privateIp)) {
-    stop('oops...something went wrong...')
+    stop('oops...something went wrong...: ', privateIp)
   } else {
     return(NULL)
   }

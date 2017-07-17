@@ -19,7 +19,7 @@ devtools::install_github('chiefBiiko/getMyIp')
 ## Usage
 
 ```r
-getMyIp::publicV4()   # '22.36.44.77'
+getMyIp::publicV4()   # '187.419.36.44'
 getMyIp::privateV4()  # '192.168.178.22'
 getMyIp::listV4()     # named list: $public, $private
 ```
